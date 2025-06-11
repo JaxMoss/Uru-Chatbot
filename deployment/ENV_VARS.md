@@ -16,7 +16,7 @@ This document describes the environment variables used in the Uru ChatGPT Interf
 
 | Variable | Description | Required | Default |
 |----------|-------------|----------|---------|
-| NEXT_PUBLIC_API_URL | URL of the backend API | Yes | http://localhost:8000/api |
+| NEXT_PUBLIC_API_URL | URL of the backend API | Yes | http://localhost:8001/api |
 
 ## Deployment Environment Variables
 
