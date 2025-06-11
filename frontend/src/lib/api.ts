@@ -2,12 +2,18 @@ import axios from 'axios';
 
 const API_URL = process.env.NEXT_PUBLIC_API_URL;
 
+if (!API_URL) {
+  console.error('NEXT_PUBLIC_API_URL is not defined');
+}
+
 // Create axios instance with base URL
 const apiClient = axios.create({
   baseURL: API_URL,
   headers: {
     'Content-Type': 'application/json',
   },
+  // Add timeout to prevent hanging requests
+  timeout: 10000,
 });
 
 // Request interceptor to add auth token
@@ -19,21 +25,35 @@ apiClient.interceptors.request.use(
     }
     return config;
   },
-  (error) => Promise.reject(error)
+  (error) => {
+    console.error('API Request Error:', error);
+    return Promise.reject(error);
+  }
 );
 
 // Response interceptor for error handling
 apiClient.interceptors.response.use(
   (response) => response,
   (error) => {
+    console.error('API Response Error:', error);
+    
+    // Handle network errors
+    if (!error.response) {
+      console.error('Network Error - Unable to reach the server');
+      return Promise.reject(new Error('Unable to connect to the server. Please check your internet connection.'));
+    }
+    
     // Handle 401 Unauthorized errors
-    if (error.response && error.response.status === 401) {
+    if (error.response.status === 401) {
       // Clear token and redirect to login
       localStorage.removeItem('token');
       localStorage.removeItem('userId');
       window.location.href = '/login';
     }
-    return Promise.reject(error);
+    
+    // Handle other errors
+    const errorMessage = error.response?.data?.detail || 'An unexpected error occurred';
+    return Promise.reject(new Error(errorMessage));
   }
 );
 
