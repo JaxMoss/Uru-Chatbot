@@ -45,21 +45,6 @@ services:
       - app-network
     restart: always
 
-  nginx:
-    image: nginx:alpine
-    ports:
-      - "8080:80"
-    environment:
-      - INSTANCE=chat-dev
-    volumes:
-      - ./deployment/nginx/default.conf.template:/etc/nginx/templates/default.conf.template
-    depends_on:
-      - frontend
-      - backend
-    networks:
-      - app-network
-    restart: always
-
 volumes:
   postgres_data:
 

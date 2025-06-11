@@ -1,4 +1,4 @@
-# Environment Variables Documentation
+# Environment Variables
 
 This document describes the environment variables used in the Uru ChatGPT Interface project.
 
@@ -26,17 +26,16 @@ This document describes the environment variables used in the Uru ChatGPT Interf
 | POSTGRES_PASSWORD | PostgreSQL password | Yes | postgres |
 | POSTGRES_DB | PostgreSQL database name | Yes | uru_chatbot |
 
-## Deployment Environment Variables
+## Deployment Notes
 
-These variables are used in the Elestio deployment configuration:
+The application is configured for direct container access:
+- Frontend is accessible on port 3001
+- Backend API is accessible on port 8001
+- Database is internal to the Docker network
 
-| Variable | Description | Required | Default |
-|----------|-------------|----------|---------|
-| INSTANCE | Instance name for subdomain | Yes | - |
-| JWT_SECRET | Secret key for JWT token generation | Yes | - |
-| DB_USER | Database username | Yes | postgres |
-| DB_PASSWORD | Database password | Yes | - |
-| DB_NAME | Database name | Yes | uru_chatbot |
+For production deployment on Elestio:
+- Frontend URL: https://dynamosoftware.chat-dev.uruenterprises.com
+- Backend URL: https://api.dynamosoftware.chat-dev.uruenterprises.com
 
 ## Security Notes
 
