@@ -34,15 +34,11 @@ const nextConfig = {
     ]
   },
   // Handle crypto-js module
-  webpack: (config, { isServer }) => {
-    if (!isServer) {
-      config.resolve.fallback = {
-        ...config.resolve.fallback,
-        crypto: false,
-        stream: false,
-        buffer: false,
-      };
-    }
+  webpack: (config) => {
+    config.resolve.alias = {
+      ...config.resolve.alias,
+      crypto: 'crypto-js',
+    };
     return config;
   },
 }

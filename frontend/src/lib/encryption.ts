@@ -8,7 +8,12 @@ const DEFAULT_KEY = 'default-encryption-key';
  */
 export const encryptData = (data: string, userKey: string): string => {
   if (!data || !userKey) return '';
-  return CryptoJS.AES.encrypt(data, userKey).toString();
+  try {
+    return CryptoJS.AES.encrypt(data, userKey).toString();
+  } catch (error) {
+    console.error('Encryption failed:', error);
+    return '';
+  }
 };
 
 /**
@@ -44,7 +49,8 @@ export const generateDeviceKey = (): string => {
       screen.height
     ].join('|');
     
-    return CryptoJS.SHA256(browserInfo).toString();
+    // Use MD5 instead of SHA256 to avoid potential math issues
+    return CryptoJS.MD5(browserInfo).toString();
   } catch (error) {
     console.error('Failed to generate device key:', error);
     return DEFAULT_KEY;
