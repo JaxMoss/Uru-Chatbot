@@ -20,7 +20,10 @@ class Settings(BaseSettings):
     ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
     
     # CORS settings
-    CORS_ORIGINS: List[str] = json.loads(os.getenv("CORS_ORIGINS", "[\"http://localhost:3000\"]"))
+    CORS_ORIGINS: List[str] = [
+        "https://dynamosoftware.chat-dev.uruenterprises.com",
+        "http://localhost:3000"
+    ]
     
     # Database settings
     DATABASE_URL: str = os.getenv(
