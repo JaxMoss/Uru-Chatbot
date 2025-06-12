@@ -15,9 +15,9 @@ class Settings(BaseSettings):
     PROJECT_NAME: str = "Uru ChatGPT Interface"
     
     # Security settings
-    SECRET_KEY: str = os.getenv("SECRET_KEY", "development_secret_key")
+    SECRET_KEY: str = "your-secret-key-here"  # Change in production
     ALGORITHM: str = "HS256"
-    ACCESS_TOKEN_EXPIRE_MINUTES: int = 30
+    ACCESS_TOKEN_EXPIRE_MINUTES: int = 60 * 24 * 8  # 8 days
     
     # CORS settings
     CORS_ORIGINS: List[str] = [
@@ -28,18 +28,17 @@ class Settings(BaseSettings):
     ]
     
     # Database settings
-    DATABASE_URL: str = os.getenv(
-        "DATABASE_URL", 
-        "postgresql+asyncpg://postgres:postgres@db/uru_chatbot"
-    )
+    POSTGRES_SERVER: str = "db"
+    POSTGRES_USER: str = "postgres"
+    POSTGRES_PASSWORD: str = "postgres"
+    POSTGRES_DB: str = "uru_chatbot"
+    DATABASE_URL: str = f"postgresql+asyncpg://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}/{POSTGRES_DB}"
     
     # OpenAI settings
-    OPENAI_MODELS: List[str] = [
-        "gpt-4o",
-        "gpt-4o-mini",
-        "o1-preview",
-        "o1-mini"
-    ]
+    OPENAI_API_KEY: str = ""
+    OPENAI_MODEL: str = "gpt-4"
+    OPENAI_MAX_TOKENS: int = 2000
+    OPENAI_TEMPERATURE: float = 0.7
     
     class Config:
         case_sensitive = True
