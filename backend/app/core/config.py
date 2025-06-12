@@ -24,7 +24,9 @@ class Settings(BaseSettings):
         "https://uru-chatbot-jax-u46172.vm.elestio.app",
         "https://api.uru-chatbot-u46172.vm.elestio.app",
         "http://localhost:3000",
-        "http://localhost:8000"
+        "http://localhost:3001",
+        "http://localhost:8000",
+        "http://localhost:8001"
     ]
     
     # Database settings
@@ -32,17 +34,23 @@ class Settings(BaseSettings):
     POSTGRES_USER: str = "postgres"
     POSTGRES_PASSWORD: str = "postgres"
     POSTGRES_DB: str = "uru_chatbot"
-    DATABASE_URL: str = f"postgresql+asyncpg://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}/{POSTGRES_DB}"
+    DATABASE_URL: str = os.getenv(
+        "ALEMBIC_DATABASE_URL",
+        f"postgresql+asyncpg://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}/{POSTGRES_DB}"
+    )
     
     # OpenAI settings
     OPENAI_MODELS: List[str] = [
         "gpt-4o",
         "gpt-4o-mini",
-        "o1-preview",
-        "o1-mini"
+        "o1",
+        "o1-mini",
+        "o3",
+        "gpt-4.1",
+        "gpt-4.1-mini"
     ]
     OPENAI_API_KEY: str = ""
-    OPENAI_MODEL: str = "gpt-4"
+    OPENAI_MODEL: str = "gpt-4o"
     OPENAI_MAX_TOKENS: int = 2000
     OPENAI_TEMPERATURE: float = 0.7
     
