@@ -11,10 +11,10 @@ COPY . .
 
 # Set environment variables
 ENV PYTHONPATH=/app
-ENV PORT=8000
+ENV PORT=8001
 
 # Expose the port
-EXPOSE 8000
+EXPOSE 8001
 
 # Run the application
 CMD ["uvicorn", "app.main:app", "--host", "0.0.0.0", "--port", "8001"]
