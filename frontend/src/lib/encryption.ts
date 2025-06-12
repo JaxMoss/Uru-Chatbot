@@ -3,6 +3,9 @@ import CryptoJS from 'crypto-js';
 // Constants for encryption
 const DEFAULT_KEY = 'default-encryption-key';
 
+// Helper to check if we're in a browser environment
+const isBrowser = typeof window !== 'undefined';
+
 /**
  * Encrypts sensitive data with a user-specific key
  */
@@ -34,8 +37,7 @@ export const decryptData = (encryptedData: string, userKey: string): string => {
  * Generates a device-specific key for additional encryption layer
  */
 export const generateDeviceKey = (): string => {
-  // SSR-safe check for browser environment
-  if (typeof window === 'undefined') {
+  if (!isBrowser) {
     return DEFAULT_KEY;
   }
   
@@ -49,7 +51,6 @@ export const generateDeviceKey = (): string => {
       screen.height
     ].join('|');
     
-    // Use MD5 instead of SHA256 to avoid potential math issues
     return CryptoJS.MD5(browserInfo).toString();
   } catch (error) {
     console.error('Failed to generate device key:', error);
@@ -61,15 +62,13 @@ export const generateDeviceKey = (): string => {
  * Securely stores API key in localStorage with encryption
  */
 export const storeApiKey = (apiKey: string): void => {
-  if (!apiKey || typeof window === 'undefined') return;
+  if (!apiKey || !isBrowser) return;
   
   try {
-    // Get user ID from auth context to use as encryption key
     const userId = localStorage.getItem('userId') || 'default-user';
     const deviceKey = generateDeviceKey();
     const encryptionKey = `${userId}-${deviceKey}`;
     
-    // Double encryption
     const encryptedKey = encryptData(apiKey, encryptionKey);
     localStorage.setItem('encrypted_api_key', encryptedKey);
   } catch (error) {
@@ -81,8 +80,7 @@ export const storeApiKey = (apiKey: string): void => {
  * Retrieves and decrypts API key from localStorage
  */
 export const getApiKey = (): string | null => {
-  // SSR-safe check for browser environment
-  if (typeof window === 'undefined') {
+  if (!isBrowser) {
     return null;
   }
   
@@ -90,7 +88,6 @@ export const getApiKey = (): string | null => {
     const encryptedKey = localStorage.getItem('encrypted_api_key');
     if (!encryptedKey) return null;
     
-    // Get user ID from auth context to use as encryption key
     const userId = localStorage.getItem('userId') || 'default-user';
     const deviceKey = generateDeviceKey();
     const encryptionKey = `${userId}-${deviceKey}`;
@@ -106,7 +103,7 @@ export const getApiKey = (): string | null => {
  * Removes API key from localStorage
  */
 export const clearApiKey = (): void => {
-  if (typeof window === 'undefined') return;
+  if (!isBrowser) return;
   try {
     localStorage.removeItem('encrypted_api_key');
   } catch (error) {

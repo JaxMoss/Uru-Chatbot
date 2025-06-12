@@ -22,13 +22,13 @@ class Settings(BaseSettings):
     # CORS settings
     CORS_ORIGINS: List[str] = [
         "https://dynamosoftware.chat-dev.uruenterprises.com",
-        "http://localhost:3000"
+        "http://localhost:3001"
     ]
     
     # Database settings
     DATABASE_URL: str = os.getenv(
         "DATABASE_URL", 
-        "postgresql+asyncpg://postgres:postgres@localhost/uru_chatbot"
+        "postgresql+asyncpg://postgres:postgres@db/uru_chatbot"
     )
     
     # OpenAI settings

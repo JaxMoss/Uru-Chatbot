@@ -7,8 +7,9 @@ const nextConfig = {
   },
   images: {
     domains: [
-      'dynamosoftware.chat-dev.uruenterprises.com',
-      'api.dynamosoftware.chat-dev.uruenterprises.com'
+      'localhost',
+      'uru-chatbot-jax-u46172.vm.elestio.app',
+      'api.uru-chatbot-u46172.vm.elestio.app'
     ],
   },
   // Add security headers
@@ -34,13 +35,17 @@ const nextConfig = {
     ]
   },
   // Handle crypto-js module
-  webpack: (config) => {
-    config.resolve.alias = {
-      ...config.resolve.alias,
-      crypto: 'crypto-js',
-    };
+  webpack: (config, { isServer }) => {
+    if (!isServer) {
+      config.resolve.fallback = {
+        ...config.resolve.fallback,
+        crypto: require.resolve('crypto-browserify'),
+        stream: require.resolve('stream-browserify'),
+        buffer: require.resolve('buffer/'),
+      };
+    }
     return config;
-  },
+  }
 }
 
 module.exports = nextConfig

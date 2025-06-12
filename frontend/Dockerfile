@@ -2,13 +2,11 @@ FROM node:18-alpine AS builder
 
 WORKDIR /app
 
-# Copy package.json and package-lock.json
-COPY package*.json ./
-
 # Install dependencies
+COPY package*.json ./
 RUN npm ci
 
-# Copy the rest of the application
+# Copy the application code
 COPY . .
 
 # Build the application
@@ -19,18 +17,21 @@ FROM node:18-alpine AS runner
 
 WORKDIR /app
 
-# Set environment variables
-ENV NODE_ENV=production
+# Install production dependencies
+COPY package*.json ./
+RUN npm ci --only=production
 
-# Copy necessary files from builder
-COPY --from=builder /app/next.config.js ./
-COPY --from=builder /app/public ./public
+# Copy built application
 COPY --from=builder /app/.next ./.next
+COPY --from=builder /app/public ./public
 COPY --from=builder /app/node_modules ./node_modules
 COPY --from=builder /app/package.json ./package.json
+
+# Install additional required dependencies
+RUN npm install critters
 
 # Expose the port
 EXPOSE 3000
 
-# Run the application
+# Start the application
 CMD ["npm", "start"]

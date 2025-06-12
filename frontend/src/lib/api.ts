@@ -1,10 +1,6 @@
 import axios from 'axios';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL;
-
-if (!API_URL) {
-  console.error('NEXT_PUBLIC_API_URL is not defined');
-}
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001/api';
 
 // Create axios instance with base URL
 const apiClient = axios.create({
@@ -14,14 +10,19 @@ const apiClient = axios.create({
   },
   // Add timeout to prevent hanging requests
   timeout: 10000,
+  // Add withCredentials for CORS
+  withCredentials: true,
 });
 
 // Request interceptor to add auth token
 apiClient.interceptors.request.use(
   (config) => {
-    const token = localStorage.getItem('token');
-    if (token) {
-      config.headers.Authorization = `Bearer ${token}`;
+    // Only access localStorage in browser environment
+    if (typeof window !== 'undefined') {
+      const token = localStorage.getItem('token');
+      if (token) {
+        config.headers.Authorization = `Bearer ${token}`;
+      }
     }
     return config;
   },
@@ -45,10 +46,12 @@ apiClient.interceptors.response.use(
     
     // Handle 401 Unauthorized errors
     if (error.response.status === 401) {
-      // Clear token and redirect to login
-      localStorage.removeItem('token');
-      localStorage.removeItem('userId');
-      window.location.href = '/login';
+      // Only access localStorage in browser environment
+      if (typeof window !== 'undefined') {
+        localStorage.removeItem('token');
+        localStorage.removeItem('userId');
+        window.location.href = '/login';
+      }
     }
     
     // Handle other errors
@@ -60,11 +63,11 @@ apiClient.interceptors.response.use(
 export const api = {
   // Auth endpoints
   login: async (email: string, password: string) => {
-    const formData = new FormData();
+    const formData = new URLSearchParams();
     formData.append('username', email);
     formData.append('password', password);
     
-    const response = await apiClient.post('/auth/login', formData, {
+    const response = await apiClient.post('/auth/login', formData.toString(), {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
