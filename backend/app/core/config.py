@@ -35,6 +35,12 @@ class Settings(BaseSettings):
     DATABASE_URL: str = f"postgresql+asyncpg://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}/{POSTGRES_DB}"
     
     # OpenAI settings
+    OPENAI_MODELS: List[str] = [
+        "gpt-4o",
+        "gpt-4o-mini",
+        "o1-preview",
+        "o1-mini"
+    ]
     OPENAI_API_KEY: str = ""
     OPENAI_MODEL: str = "gpt-4"
     OPENAI_MAX_TOKENS: int = 2000

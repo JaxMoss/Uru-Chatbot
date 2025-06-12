@@ -6,9 +6,9 @@ services:
       context: ./frontend
       dockerfile: Dockerfile
     ports:
-      - "3001:3000"
+      - "3000:3000"
     environment:
-      - NEXT_PUBLIC_API_URL=https://api.dynamosoftware.chat-dev.uruenterprises.com
+      - NEXT_PUBLIC_API_URL=http://localhost:8001/api
     depends_on:
       - backend
     networks:
@@ -20,13 +20,15 @@ services:
       context: ./backend
       dockerfile: Dockerfile
     ports:
-      - "8001:8000"
+      - "8001:8001"
     environment:
-      - DATABASE_URL=postgresql+asyncpg://${DB_USER}:${DB_PASSWORD}@db:5432/${DB_NAME}
-      - SECRET_KEY=${JWT_SECRET}
-      - ALGORITHM=HS256
-      - ACCESS_TOKEN_EXPIRE_MINUTES=30
-      - CORS_ORIGINS=["https://dynamosoftware.chat-dev.uruenterprises.com","http://localhost:3001"]
+      - POSTGRES_SERVER=db
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=uru_chatbot
+      - DATABASE_URL=postgresql+asyncpg://postgres:postgres@db/uru_chatbot
+      - SECRET_KEY=${SECRET_KEY}
+      - OPENAI_API_KEY=${OPENAI_API_KEY}
     depends_on:
       - db
     networks:
@@ -34,13 +36,13 @@ services:
     restart: always
 
   db:
-    image: postgres:14
+    image: postgres:15
     volumes:
       - postgres_data:/var/lib/postgresql/data/
     environment:
-      - POSTGRES_USER=${DB_USER}
-      - POSTGRES_PASSWORD=${DB_PASSWORD}
-      - POSTGRES_DB=${DB_NAME}
+      - POSTGRES_USER=postgres
+      - POSTGRES_PASSWORD=postgres
+      - POSTGRES_DB=uru_chatbot
     networks:
       - app-network
     restart: always
