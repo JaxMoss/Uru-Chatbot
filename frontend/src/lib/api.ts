@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001/api';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'https://api.uru-chatbot-u46172.vm.elestio.app:8001/api';
 
 // Create axios instance with base URL
 const apiClient = axios.create({
@@ -54,6 +54,12 @@ apiClient.interceptors.response.use(
       }
     }
     
+    // Handle registration errors specifically
+    if (error.response.status === 400 && error.config.url?.includes('/auth/register')) {
+      const errorMessage = error.response?.data?.detail || 'Registration failed. Please check your input and try again.';
+      return Promise.reject(new Error(errorMessage));
+    }
+    
     // Handle other errors
     const errorMessage = error.response?.data?.detail || 'An unexpected error occurred';
     return Promise.reject(new Error(errorMessage));
@@ -76,8 +82,13 @@ export const api = {
   },
   
   register: async (email: string, password: string) => {
-    const response = await apiClient.post('/auth/register', { email, password });
-    return response.data;
+    try {
+      const response = await apiClient.post('/auth/register', { email, password });
+      return response.data;
+    } catch (error) {
+      console.error('Registration error:', error);
+      throw error;
+    }
   },
   
   // Conversation endpoints

@@ -21,8 +21,10 @@ class Settings(BaseSettings):
     
     # CORS settings
     CORS_ORIGINS: List[str] = [
-        "https://dynamosoftware.chat-dev.uruenterprises.com",
-        "http://localhost:3001"
+        "https://uru-chatbot-jax-u46172.vm.elestio.app",
+        "https://api.uru-chatbot-u46172.vm.elestio.app",
+        "http://localhost:3000",
+        "http://localhost:8000"
     ]
     
     # Database settings
