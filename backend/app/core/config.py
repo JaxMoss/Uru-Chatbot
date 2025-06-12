@@ -34,10 +34,16 @@ class Settings(BaseSettings):
     POSTGRES_USER: str = "postgres"
     POSTGRES_PASSWORD: str = "postgres"
     POSTGRES_DB: str = "uru_chatbot"
-    DATABASE_URL: str = os.getenv(
-        "ALEMBIC_DATABASE_URL",
-        f"postgresql+asyncpg://{POSTGRES_USER}:{POSTGRES_PASSWORD}@{POSTGRES_SERVER}/{POSTGRES_DB}"
-    )
+    
+    @property
+    def DATABASE_URL(self) -> str:
+        """Get async database URL."""
+        return f"postgresql+asyncpg://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_SERVER}/{self.POSTGRES_DB}"
+    
+    @property
+    def SYNC_DATABASE_URL(self) -> str:
+        """Get sync database URL for Alembic."""
+        return f"postgresql://{self.POSTGRES_USER}:{self.POSTGRES_PASSWORD}@{self.POSTGRES_SERVER}/{self.POSTGRES_DB}"
     
     # OpenAI settings
     OPENAI_MODELS: List[str] = [

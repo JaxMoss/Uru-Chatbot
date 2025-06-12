@@ -9,11 +9,17 @@ const LoginPage: React.FC = () => {
   const [isRegister, setIsRegister] = useState(false);
   const { login, register, isLoading, error } = useAuth();
   const router = useRouter();
+  const [errorMessage, setError] = useState('');
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     
     if (!email || !password) return;
+    
+    if (isRegister && password.length < 8) {
+      setError('Password must be at least 8 characters long');
+      return;
+    }
     
     let success;
     if (isRegister) {
@@ -84,11 +90,11 @@ const LoginPage: React.FC = () => {
               </div>
             </div>
 
-            {error && (
+            {errorMessage && (
               <div className="rounded-md bg-red-50 p-4">
                 <div className="flex">
                   <div className="ml-3">
-                    <h3 className="text-sm font-medium text-red-800">{error}</h3>
+                    <h3 className="text-sm font-medium text-red-800">{errorMessage}</h3>
                   </div>
                 </div>
               </div>

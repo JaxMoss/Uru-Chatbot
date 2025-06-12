@@ -1,6 +1,6 @@
 import axios from 'axios';
 
-const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001/api';
+const API_URL = process.env.NEXT_PUBLIC_API_URL || 'http://localhost:8001';
 
 // Create axios instance with base URL
 const apiClient = axios.create({
@@ -55,7 +55,7 @@ apiClient.interceptors.response.use(
     }
     
     // Handle registration errors specifically
-    if (error.response.status === 400 && error.config.url?.includes('/auth/register')) {
+    if (error.response.status === 400 && error.config.url?.includes('/api/auth/register')) {
       const errorMessage = error.response?.data?.detail || 'Registration failed. Please check your input and try again.';
       return Promise.reject(new Error(errorMessage));
     }
@@ -73,7 +73,7 @@ export const api = {
     formData.append('username', email);
     formData.append('password', password);
     
-    const response = await apiClient.post('/auth/login', formData.toString(), {
+    const response = await apiClient.post('/api/auth/login', formData.toString(), {
       headers: {
         'Content-Type': 'application/x-www-form-urlencoded',
       },
@@ -83,7 +83,9 @@ export const api = {
   
   register: async (email: string, password: string) => {
     try {
-      const response = await apiClient.post('/auth/register', { email, password });
+      const response = await apiClient.post('/api/auth/register', { email, password }, {
+        withCredentials: false
+      });
       return response.data;
     } catch (error) {
       console.error('Registration error:', error);
